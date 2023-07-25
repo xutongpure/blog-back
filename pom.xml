@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.11</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.blog</groupId>
+	<artifactId>blog</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>blog</name>
+	<description>blog</description>
+	<modules>
+		<module>blog-common</module>
+		<module>blog-admin</module>
+		<module>blog-front</module>
+	</modules>
+	<properties>
+		<java.version>1.8</java.version>
+	</properties>
+	<dependencyManagement>
+		<dependencies>
+
+
+			<!-- https://mvnrepository.com/artifact/com.alibaba/fastjson -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>1.2.33</version>
+			</dependency>
+
+			<!--jwt依赖-->
+			<dependency>
+				<groupId>io.jsonwebtoken</groupId>
+				<artifactId>jjwt</artifactId>
+				<version>0.9.0</version>
+			</dependency>
+			<!--mybatisPlus依赖-->
+			<!-- https://mvnrepository.com/artifact/com.baomidou/mybatis-plus-boot-starter -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>3.5.3.1</version>
+			</dependency>
+
+
+			<!--阿里云OSS-->
+			<!-- https://mvnrepository.com/artifact/com.aliyun.oss/aliyun-sdk-oss -->
+			<dependency>
+				<groupId>com.aliyun.oss</groupId>
+				<artifactId>aliyun-sdk-oss</artifactId>
+				<version>3.16.2</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>easyexcel</artifactId>
+				<version>3.2.1</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-boot-starter</artifactId>
+				<version>3.0.0</version>
+			</dependency>
+
+
+
+
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+</project>
