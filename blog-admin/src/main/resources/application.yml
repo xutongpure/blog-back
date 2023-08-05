@@ -10,6 +10,10 @@ spring:
     multipart:
       max-file-size: 2MB
       max-request-size: 5MB
+  redis:
+    host: 39.105.139.200
+    port: 6379
+    password: Xt774071!
   mvc:
     pathmatch:
       matching-strategy: ANT_PATH_MATCHER # 因为Springfox使用的路径匹配是基于AntPathMatcher的，
@@ -25,3 +29,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
+oss:
+  accessKey: Y83F8XrtOh5FW31bNJaJsWZDGQIpiiCHKfGdK9SD
+  secretKey: BFpFjmIiJMfIAeowKtdoXuAfLzevo4tbRvP-DrdO
+  bucket: xutongblog

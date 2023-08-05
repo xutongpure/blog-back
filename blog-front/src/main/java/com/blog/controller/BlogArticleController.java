@@ -9,7 +9,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/article")
-public class ArticleController {
+public class BlogArticleController {
 
     @Resource
     private ArticleService articleService;

@@ -27,6 +27,7 @@ public class ArticleListVo {
     //访问量
     private Long viewCount;
 
+
     @JSONField(format = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
