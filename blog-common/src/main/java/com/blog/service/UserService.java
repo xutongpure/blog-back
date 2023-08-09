@@ -3,6 +3,8 @@ package com.blog.service;
 import com.blog.domain.ResponseResult;
 import com.blog.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.blog.domain.dto.AddUserDto;
+import com.blog.domain.dto.UpdateUserDto;
 
 /**
 * @author xuton
@@ -16,4 +18,14 @@ public interface UserService extends IService<User> {
     ResponseResult updateUserInfo(User user);
 
     ResponseResult register(User user);
+
+    ResponseResult pageUserList(Integer pageNum, Integer pageSize, String userName, String phonenumber, String status);
+
+    ResponseResult addUser(AddUserDto addUserDto);
+
+    ResponseResult delUser(Long id);
+
+    ResponseResult getUser(Long id);
+
+    ResponseResult updateUser(UpdateUserDto updateUserDto);
 }

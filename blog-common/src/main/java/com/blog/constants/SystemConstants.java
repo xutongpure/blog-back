@@ -19,6 +19,11 @@ public class SystemConstants
     public static final String LINK_STATUS_NORMAL = "0";
 
     /**
+     * 角色审核通过状态
+     */
+    public static final String ROLE_STATUS_NORMAL = "0";
+
+    /**
      * 根评论
      */
     public static final String COMMENT_ROOTID_DISABLE = "-1";

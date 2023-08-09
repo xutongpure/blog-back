@@ -4,7 +4,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 @Data
-@Accessors(chain = true)
+@Accessors(chain = true) //setter方法返回当前对象
 public class UserInfoVo {
     /**
      * 主键

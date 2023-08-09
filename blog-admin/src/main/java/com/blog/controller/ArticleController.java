@@ -30,4 +30,15 @@ public class ArticleController {
         return articleService.getAtricle(id);
     }
 
+    @PutMapping
+    public ResponseResult updateArticle(@RequestBody AddArticleDto addArticleDto) {
+        return articleService.updateArticle(addArticleDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult delete(@PathVariable("id") Long id) {
+        return articleService.delete(id);
+    }
+
+
 }

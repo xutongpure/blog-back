@@ -4,6 +4,8 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.blog.domain.Category;
 import com.blog.domain.ResponseResult;
+import com.blog.domain.dto.AddCategoryDto;
+import com.blog.domain.dto.UpdateCategoryDto;
 import com.blog.domain.vo.ExcelCategoryVo;
 import com.blog.enums.AppHttpCodeEnum;
 import com.blog.service.CategoryService;
@@ -11,9 +13,7 @@ import com.blog.utils.BeanCopyUtils;
 import com.blog.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -49,5 +49,30 @@ public class CategoryController {
             ResponseResult result = ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
             WebUtils.renderString(response, JSON.toJSONString(result));
         }
+    }
+
+    @GetMapping("/list")
+    public ResponseResult list(Integer pageNum, Integer pageSize, String name, String status) {
+        return categoryService.pageCategoryList(pageNum,pageSize,name,status);
+    }
+
+    @PostMapping
+    public ResponseResult addCategory(@RequestBody AddCategoryDto addCategoryDto) {
+        return categoryService.addCategory(addCategoryDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseResult getCategory(@PathVariable("id") Long id) {
+        return categoryService.getCategory(id);
+    }
+
+    @PutMapping
+    public ResponseResult updateCategory(@RequestBody UpdateCategoryDto updateCategoryDto) {
+        return categoryService.updateCategory(updateCategoryDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult delCategory(@PathVariable("id") Long id) {
+        return categoryService.delCategory(id);
     }
 }

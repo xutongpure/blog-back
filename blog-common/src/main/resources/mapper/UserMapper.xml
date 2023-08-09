@@ -29,4 +29,7 @@
         avatar,create_by,create_time,
         update_by,update_time,del_flag
     </sql>
+    <delete id="deleteBatch">
+        delete from sys_user_role where user_id = #{userId}
+    </delete>
 </mapper>

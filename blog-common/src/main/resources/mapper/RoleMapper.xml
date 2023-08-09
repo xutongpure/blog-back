@@ -25,6 +25,7 @@
         update_time,remark
     </sql>
 
+
     <select id="selectRoleKeyByUserId" resultType="java.lang.String">
         SELECT
             r.`role_key`
@@ -36,5 +37,17 @@
             r.`status` = 0 AND
             r.`del_flag` = 0
     </select>
+
+    <insert id="insertBatch" >
+        INSERT INTO sys_role_menu VALUES
+        <foreach collection="menuIds" item="menuId" separator=",">
+            (#{roleId},#{menuId})
+        </foreach>
+    </insert>
+
+    <delete id="deleteBatch">
+        delete from sys_role_menu where role_id = #{roleId}
+
+    </delete>
 
 </mapper>

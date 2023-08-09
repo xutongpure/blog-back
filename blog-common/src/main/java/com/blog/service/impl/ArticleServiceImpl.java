@@ -23,6 +23,7 @@ import org.springframework.util.StringUtils;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -186,6 +187,42 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         adminGetArticleVo.setTags(articleTagList);
         return ResponseResult.okResult(adminGetArticleVo);
+    }
+
+    @Override
+    public ResponseResult updateArticle(AddArticleDto addArticleDto) {
+        //添加 博客
+        Article article = BeanCopyUtils.copyBean(addArticleDto, Article.class);
+        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Article::getId,article.getId());
+        update(article,queryWrapper);
+
+
+        List<ArticleTag> articleTags = addArticleDto.getTags().stream()
+                .map(tagId -> new ArticleTag(article.getId(), tagId))
+                .collect(Collectors.toList());
+
+
+        //查找文章的所有标签并删除
+        LambdaQueryWrapper<ArticleTag> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(ArticleTag::getArticleId,article.getId());
+        List<ArticleTag> list = articleTagService.list(wrapper);
+        list.stream().forEach(new Consumer<ArticleTag>() {
+            @Override
+            public void accept(ArticleTag articleTag) {
+                articleTagService.deleteByMultiId(articleTag);
+            }
+        });
+
+        //添加 博客和标签的关联
+        articleTagService.saveBatch(articleTags);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult delete(Long id) {
+        removeById(id);
+        return ResponseResult.okResult();
     }
 }
 

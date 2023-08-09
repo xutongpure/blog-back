@@ -3,6 +3,8 @@ package com.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.blog.domain.Link;
 import com.blog.domain.ResponseResult;
+import com.blog.domain.dto.AddLinkDto;
+import com.blog.domain.dto.UpdateLinkDto;
 
 /**
 * @author xuton
@@ -12,4 +14,14 @@ import com.blog.domain.ResponseResult;
 public interface LinkService extends IService<Link> {
 
     ResponseResult getAllLink();
+
+    ResponseResult pageLinkList(Integer pageNum, Integer pageSize, String name, String status);
+
+    ResponseResult addLink(AddLinkDto addLinkDto);
+
+    ResponseResult getLink(Long id);
+
+    ResponseResult updateLink(UpdateLinkDto updateLinkDto);
+
+    ResponseResult delLink(Long id);
 }
