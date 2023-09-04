@@ -22,9 +22,11 @@ import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static com.blog.constants.SystemConstants.ARTICLE_STATUS_NORMAL;
@@ -57,12 +59,47 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         //必须是正式文章
         lambdaQueryWrapper.eq(Article::getStatus,ARTICLE_STATUS_NORMAL);
         //按照浏览量进行排序
-        lambdaQueryWrapper.orderByAsc(Article::getViewCount);
+        lambdaQueryWrapper.orderByDesc(Article::getViewCount);
         //最多只查询10条
         Page<Article> page = new Page<>(1,10);
         page(page,lambdaQueryWrapper);
         List<Article> artiles = page.getRecords();
+        //获取redis中的浏览量
+        Map<String, Integer> viewCountMap = redisCache.getCacheMap("article:viewCount");
 
+        //在redis中查找articles中对应的文章id和访问量
+        List<Article> articleIds = viewCountMap.entrySet()
+                .stream()
+                .map(entry -> new Article(Long.valueOf(entry.getKey()), entry.getValue().longValue()))
+                .filter(new Predicate<Article>() {
+                    @Override
+                    public boolean test(Article article) {
+                        List<Long> list = artiles.stream().map(new Function<Article, Long>() {
+                            @Override
+                            public Long apply(Article article) {
+                                return article.getId();
+                            }
+                        }).collect(Collectors.toList());
+
+                        return list.contains(article.getId());
+                    }
+                })
+                .collect(Collectors.toList());
+
+        //将redis中的浏览量放入artiles中
+        List<Article> articles = artiles.stream()
+                .peek(new Consumer<Article>() {
+                    @Override
+                    public void accept(Article article) {
+                        List<Article> list = articleIds.stream().filter(new Predicate<Article>() {
+                            @Override
+                            public boolean test(Article article1) {
+                                return article1.getId().equals(article.getId());
+                            }
+                        }).collect(Collectors.toList());
+                        article.setViewCount(list.get(0).getViewCount());
+                    }
+                }).collect(Collectors.toList());
         List<HotArticleVo> hotArticleVos = BeanCopyUtils.copyBeanList(artiles,HotArticleVo.class);
         return ResponseResult.okResult(hotArticleVos);
     }
@@ -193,10 +230,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public ResponseResult updateArticle(AddArticleDto addArticleDto) {
         //添加 博客
         Article article = BeanCopyUtils.copyBean(addArticleDto, Article.class);
-        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Article::getId,article.getId());
-        update(article,queryWrapper);
-
+//        LambdaQueryWrapper<Article> queryWrapper = new LambdaQueryWrapper<>();
+//        queryWrapper.eq(Article::getId,article.getId());
+//        update(article,queryWrapper);
+        updateById(article);
 
         List<ArticleTag> articleTags = addArticleDto.getTags().stream()
                 .map(tagId -> new ArticleTag(article.getId(), tagId))

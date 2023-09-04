@@ -28,6 +28,7 @@ public class ViewCountRunner implements CommandLineRunner {
                 .collect(Collectors.toMap(article -> article.getId().toString(), article -> {
                     return article.getViewCount().intValue();//
                 }));
+
         //存储到redis中
         redisCache.setCacheMap("article:viewCount",viewCountMap);
     }

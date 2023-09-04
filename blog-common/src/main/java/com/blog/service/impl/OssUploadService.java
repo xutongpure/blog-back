@@ -1,8 +1,10 @@
 package com.blog.service.impl;
 
+import com.blog.domain.Dns;
 import com.blog.domain.ResponseResult;
 import com.blog.enums.AppHttpCodeEnum;
 import com.blog.exception.SystemException;
+import com.blog.service.DnsService;
 import com.blog.service.UploadService;
 import com.blog.utils.PathUtils;
 import com.google.gson.Gson;
@@ -14,6 +16,7 @@ import com.qiniu.storage.UploadManager;
 import com.qiniu.storage.model.DefaultPutRet;
 import com.qiniu.util.Auth;
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,14 +27,21 @@ import java.io.InputStream;
 @Data
 @ConfigurationProperties(prefix = "oss")
 public class OssUploadService implements UploadService {
+
+    @Autowired
+    DnsService dnsService;
+
     @Override
     public ResponseResult uploadImg(MultipartFile img) {
         //判断文件类型
         //获取原始文件名
         String originalFilename = img.getOriginalFilename();
         //对原始文件名进行判断
-        if(!originalFilename.endsWith(".jpg")){
-            throw new SystemException(AppHttpCodeEnum.FILE_TYPE_ERROR);
+        if(!originalFilename.endsWith(".jpg")
+                && !originalFilename.endsWith(".png")
+                && !originalFilename.endsWith(".JPEG")
+                && !originalFilename.endsWith(".gif")){
+          throw new SystemException(AppHttpCodeEnum.FILE_TYPE_ERROR);
         }
 
         //如果判断通过上传文件到OSS
@@ -46,6 +56,10 @@ public class OssUploadService implements UploadService {
 
 
     private String uploadOss(MultipartFile imgFile, String filePath){
+
+        Dns dns1 = dnsService.getById(1);
+        String dns = dns1.getDns();
+
         //构造一个带指定 Region 对象的配置类
         Configuration cfg = new Configuration(Region.autoRegion());
         //...其他参数参考类注释
@@ -62,7 +76,7 @@ public class OssUploadService implements UploadService {
                 DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
                 System.out.println(putRet.key);
                 System.out.println(putRet.hash);
-                return "http://rxmt402gw.bkt.clouddn.com/"+key;
+                return "http://" + dns + "/"+key;
             } catch (QiniuException ex) {
                 Response r = ex.response;
                 System.err.println(r.toString());

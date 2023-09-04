@@ -1,6 +1,7 @@
 package com.blog.job;
 
 import com.blog.domain.Article;
+import com.blog.mapper.ArticleMapper;
 import com.blog.service.ArticleService;
 import com.blog.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,10 @@ public class UpdateViewCountJob {
     @Autowired
     private ArticleService articleService;
 
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Autowired
+    private ArticleMapper articleMapper;
+    @Scheduled(cron = "0 0 0/1 * * ?")
+//    @Scheduled(cron = "0/5 * * * * ?")
     public void updateViewCount(){
         //获取redis中的浏览量
         Map<String, Integer> viewCountMap = redisCache.getCacheMap("article:viewCount");
@@ -31,6 +35,6 @@ public class UpdateViewCountJob {
                 .collect(Collectors.toList());
         //更新到数据库中
         articleService.updateBatchById(articles);
-
+//        articleMapper.updateBatch(articles);
     }
 }
